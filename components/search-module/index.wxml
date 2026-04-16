@@ -1,0 +1,36 @@
+<view class="search-section">
+  <view class="search-bar">
+    <view class="search-icon">🔍</view>
+    <input
+      class="search-input"
+      type="text"
+      placeholder="搜索任务..."
+      value="{{keyword}}"
+      bindinput="onInput"
+      bindconfirm="onConfirm"
+    />
+    <view class="search-clear" wx:if="{{keyword}}" bindtap="onClear">✕</view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="search-results" wx:if="{{results.length > 0}}">
+    <view
+      class="search-result-item priority-{{item.priority || 0}}"
+      wx:for="{{results}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onResultTap">
+      <view class="result-status {{item.completed ? 'completed' : ''}}">
+        <text class="icon">✓</text>
+      </view>
+      <view class="result-content">
+        <text class="result-title">{{item.title}}</text>
+        <text class="result-date" wx:if="{{item.startTimeDisplay}}">{{item.startTimeDisplay}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="search-empty" wx:elif="{{keyword && results.length === 0}}">
+    <text class="empty-icon">🔍</text>
+    <text class="empty-text">未找到相关任务</text>
+  </view>
+</view>

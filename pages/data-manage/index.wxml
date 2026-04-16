@@ -1,0 +1,278 @@
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <!-- 存储概览卡片 -->
+  <view class="storage-card">
+    <view class="storage-card-header">
+      <text class="storage-card-title">存储概览</text>
+      <text class="storage-card-detail">{{storageUsage.used}} KB / {{storageUsage.limit}} KB</text>
+    </view>
+    <view class="storage-bar">
+      <view class="storage-bar-fill" style="width: {{storageUsage.percentage}}%"></view>
+    </view>
+    <view class="storage-stats-row">
+      <view class="storage-stat">
+        <text class="storage-stat-value">{{stats.totalTasks}}</text>
+        <text class="storage-stat-label">总任务</text>
+      </view>
+      <view class="storage-stat-divider"></view>
+      <view class="storage-stat">
+        <text class="storage-stat-value completed">{{stats.completedTasks}}</text>
+        <text class="storage-stat-label">已完成</text>
+      </view>
+      <view class="storage-stat-divider"></view>
+      <view class="storage-stat">
+        <text class="storage-stat-value pending">{{stats.pendingTasks}}</text>
+        <text class="storage-stat-label">待办中</text>
+      </view>
+      <view class="storage-stat-divider"></view>
+      <view class="storage-stat">
+        <text class="storage-stat-value {{stats.overdueTasks > 0 ? 'overdue' : ''}}">{{stats.overdueTasks}}</text>
+        <text class="storage-stat-label">已逾期</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据操作 -->
+  <view class="section">
+    <view class="section-title">
+      <text>数据操作</text>
+    </view>
+
+    <view class="card">
+      <view class="card-row" bindtap="exportData">
+        <view class="card-left">
+          <view class="card-icon export-icon">📤</view>
+          <view class="card-info">
+            <text class="card-name">导出数据</text>
+            <text class="card-desc">导出任务为 JSON 文件</text>
+          </view>
+        </view>
+        <text class="card-arrow">▾</text>
+      </view>
+
+      <view class="card-divider"></view>
+
+      <view class="card-row" bindtap="importData">
+        <view class="card-left">
+          <view class="card-icon import-icon">📥</view>
+          <view class="card-info">
+            <text class="card-name">导入数据</text>
+            <text class="card-desc">从剪贴板导入任务</text>
+          </view>
+        </view>
+        <text class="card-arrow">▾</text>
+      </view>
+
+      <view class="card-divider"></view>
+
+      <view class="card-row" bindtap="showDetailedStats">
+        <view class="card-left">
+          <view class="card-icon stats-icon">📊</view>
+          <view class="card-info">
+            <text class="card-name">数据统计</text>
+            <text class="card-desc">查看详细使用统计</text>
+          </view>
+        </view>
+        <text class="card-arrow">▾</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 云同步 -->
+  <view class="section">
+    <view class="section-title">
+      <text>云同步</text>
+    </view>
+
+    <view class="card">
+      <view class="card-row" bindtap="showWebDAVSettings">
+        <view class="card-left">
+          <view class="card-icon sync-icon">☁️</view>
+          <view class="card-info">
+            <text class="card-name">坚果云 WebDAV</text>
+            <text class="card-desc">{{webdavStatus.configured ? '上次同步: ' + (webdavStatus.lastSyncTime || '从未') : '未配置，点击设置'}}</text>
+          </view>
+        </view>
+        <view class="card-right-group">
+          <text class="status-tag {{webdavStatus.configured ? 'configured' : ''}}">{{webdavStatus.configured ? '已配置' : '未配置'}}</text>
+          <text class="card-arrow">▾</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据清理 -->
+  <view class="section">
+    <view class="section-title">
+      <text>数据清理</text>
+    </view>
+
+    <view class="card">
+      <view class="card-row" bindtap="clearCompletedTasks">
+        <view class="card-left">
+          <view class="card-icon clear-icon">🧹</view>
+          <view class="card-info">
+            <text class="card-name">清除已完成</text>
+            <text class="card-desc">删除所有已完成的任务</text>
+          </view>
+        </view>
+        <text class="card-arrow">▾</text>
+      </view>
+
+      <view class="card-divider"></view>
+
+      <view class="card-row danger-row" bindtap="clearAllData">
+        <view class="card-left">
+          <view class="card-icon danger-icon">🗑️</view>
+          <view class="card-info">
+            <text class="card-name danger-text">清空所有数据</text>
+            <text class="card-desc">删除全部任务数据，不可恢复</text>
+          </view>
+        </view>
+        <text class="card-arrow">▾</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- WebDAV设置弹窗 -->
+  <view class="modal-mask {{showWebDAVModal ? 'show' : ''}}" bindtap="closeWebDAVModal">
+    <view class="modal-content webdav-modal {{showWebDAVModal ? 'show' : ''}}" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">WebDAV 云同步设置</text>
+        <view class="modal-close" bindtap="closeWebDAVModal">×</view>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y>
+        <!-- 同步状态 -->
+        <view class="webdav-status" wx:if="{{webdavStatus.configured}}">
+          <view class="status-item">
+            <text class="status-label">配置状态:</text>
+            <text class="status-value configured">已配置</text>
+          </view>
+          <view class="status-item" wx:if="{{webdavStatus.lastSyncTime}}">
+            <text class="status-label">上次同步:</text>
+            <text class="status-value">{{webdavStatus.lastSyncTime}}</text>
+          </view>
+          <view class="status-item">
+            <text class="status-label">自动同步:</text>
+            <text class="status-value">{{webdavStatus.autoSync ? '已开启' : '已关闭'}}</text>
+          </view>
+        </view>
+
+        <!-- 配置表单 -->
+        <view class="webdav-form">
+          <view class="form-item">
+            <text class="form-label">服务器地址 *</text>
+            <input class="form-input" type="text" placeholder="https://dav.jianguoyun.com/dav/"
+              value="{{webdav.url}}" bindinput="handleWebDAVInput" data-field="url" />
+            <text class="form-hint">坚果云WebDAV地址</text>
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">用户名 *</text>
+            <input class="form-input" type="text" placeholder="坚果云账号或邮箱"
+              value="{{webdav.username}}" bindinput="handleWebDAVInput" data-field="username" />
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">密码 *</text>
+            <input class="form-input" type="password" placeholder="应用专用密码"
+              value="{{webdav.password}}" bindinput="handleWebDAVInput" data-field="password" />
+            <text class="form-hint">请在坚果云设置中生成应用专用密码</text>
+          </view>
+
+          <view class="form-item">
+            <text class="form-label">存储路径</text>
+            <input class="form-input" type="text" placeholder="/WeChat-Todo/"
+              value="{{webdav.path}}" bindinput="handleWebDAVInput" data-field="path" />
+            <text class="form-hint">数据存储在WebDAV中的路径</text>
+          </view>
+
+          <view class="form-item switch-item">
+            <view class="switch-label">
+              <text class="form-label">自动同步</text>
+              <text class="form-hint">数据变更时自动同步到云端</text>
+            </view>
+            <view class="switch {{webdav.autoSync ? 'on' : 'off'}}" bindtap="toggleAutoSync">
+              <view class="switch-knob"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="webdav-actions">
+          <button class="action-btn test-btn" bindtap="testWebDAVConnection">测试连接</button>
+          <button class="action-btn save-btn" bindtap="saveWebDAVConfig">保存配置</button>
+          <button class="action-btn sync-btn" bindtap="manualSync" wx:if="{{webdavStatus.configured}}">立即同步</button>
+          <button class="action-btn clear-btn" bindtap="clearWebDAVConfig" wx:if="{{webdavStatus.configured}}">清除配置</button>
+        </view>
+
+        <!-- 帮助信息 -->
+        <view class="webdav-help">
+          <view class="help-title">如何配置坚果云WebDAV?</view>
+          <view class="help-step">1. 登录坚果云网页版</view>
+          <view class="help-step">2. 进入「账户信息」→「安全选项」</view>
+          <view class="help-step">3. 添加「应用密码」(非登录密码)</view>
+          <view class="help-step">4. WebDAV地址: https://dav.jianguoyun.com/dav/</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 统计弹窗 -->
+  <view class="modal-mask {{showStatsModal ? 'show' : ''}}" bindtap="closeStatsModal">
+    <view class="modal-content {{showStatsModal ? 'show' : ''}}" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">数据统计</text>
+        <view class="modal-close" bindtap="closeStatsModal">×</view>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y>
+        <view class="stats-grid-large">
+          <view class="stat-box-large primary">
+            <text class="stat-num-large">{{stats.totalTasks}}</text>
+            <text class="stat-label-large">总任务数</text>
+          </view>
+          <view class="stat-box-large success">
+            <text class="stat-num-large">{{stats.completedTasks}}</text>
+            <text class="stat-label-large">已完成</text>
+          </view>
+          <view class="stat-box-large warning">
+            <text class="stat-num-large">{{stats.pendingTasks}}</text>
+            <text class="stat-label-large">待办任务</text>
+          </view>
+          <view class="stat-box-large danger">
+            <text class="stat-num-large">{{stats.importantTasks}}</text>
+            <text class="stat-label-large">重要任务</text>
+          </view>
+        </view>
+
+        <view class="stats-detail">
+          <view class="detail-item">
+            <text class="detail-label">完成率</text>
+            <text class="detail-value">{{stats.completionRate}}%</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">重要任务</text>
+            <text class="detail-value">{{stats.importantTasks}} 个</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">今日任务</text>
+            <text class="detail-value {{stats.todayTasks > 0 ? '' : 'empty'}}">{{stats.todayTasks}} 个</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">本周任务</text>
+            <text class="detail-value {{stats.weekTasks > 0 ? '' : 'empty'}}">{{stats.weekTasks}} 个</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">已逾期</text>
+            <text class="detail-value {{stats.overdueTasks > 0 ? 'overdue' : ''}}">{{stats.overdueTasks}} 个</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <view class="modal-btn" bindtap="closeStatsModal">关闭</view>
+      </view>
+    </view>
+  </view>
+</view>

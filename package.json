@@ -1,0 +1,21 @@
+{
+  "name": "wechat-todo",
+  "version": "1.0.0",
+  "description": "WeChat-Todo - 任务管理 + 连续日历 + 多功能计算器微信小程序",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "todo",
+    "calendar",
+    "calculator",
+    "miniprogram",
+    "wechat"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "miniprogram-api-typings": "^4.0.7"
+  }
+}

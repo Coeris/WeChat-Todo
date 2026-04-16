@@ -1,0 +1,62 @@
+<wxs module="utils">
+  var getPriorityEmoji = function(priority) {
+    if (priority == 0) return '😐';
+    if (priority == 1) return '⭐';
+    if (priority == 2) return '⚡';
+    if (priority == 3) return '🔥';
+    return '😐';
+  };
+  module.exports.getPriorityEmoji = getPriorityEmoji;
+</wxs>
+
+<view class="task-list">
+  <block wx:if="{{tasks.length > 0}}">
+    <view class="swipe-wrapper"
+          wx:for="{{tasks}}"
+          wx:key="id">
+      <!-- 删除按钮（底层，左侧） -->
+      <view class="delete-btn" catchtap="onDeleteTask" data-task="{{item}}">
+        <text class="delete-icon-text">🗑️</text>
+      </view>
+      <!-- 任务卡片（上层，可滑动） -->
+      <view class="swipe-content"
+            style="transform: translateX({{item._translateX || 0}}px); transition: {{item._transition ? 'transform 0.3s ease' : 'none'}};"
+            data-index="{{index}}"
+            data-id="{{item.id}}"
+            bindtouchstart="onTouchStart"
+            bindtouchmove="onTouchMove"
+            bindtouchend="onTouchEnd">
+        <view class="task-item priority-{{item.priority}} {{item.completed ? 'completed' : ''}} {{item.fadeOut ? 'fade-out' : ''}} {{item.completing ? 'completing' : ''}} {{item._depth > 0 ? 'subtask' : ''}}"
+              style="{{item._depth > 0 ? 'margin-left:' + (item._depth * 40) + 'rpx;' : ''}}">
+          <view class="task-status {{item.completed ? 'completed' : ''}} {{item.animateIcon ? 'animate-icon' : ''}}"
+                catchtap="toggleStatus"
+                data-task="{{item}}">
+            <text class="icon">✓</text>
+          </view>
+          <view class="task-content" catchtap="onTaskClick" data-task="{{item}}">
+            <view class="task-title">{{item.title}}</view>
+            <view class="task-info" wx:if="{{item.startTimeDisplay || item.endTimeDisplay || item.location}}">
+              <view class="time-info" wx:if="{{item.startTimeDisplay || item.endTimeDisplay}}">
+                <view class="time-line" wx:if="{{item.startTimeDisplay}}">
+                  <text class="time-dot start">●</text>
+                  <text class="time-text">{{item.startTimeDisplay}}</text>
+                </view>
+                <view class="time-line" wx:if="{{item.endTimeDisplay}}">
+                  <text class="time-dot end">●</text>
+                  <text class="time-text">{{item.endTimeDisplay}}</text>
+                </view>
+              </view>
+              <text wx:if="{{item.location}}">📍 {{item.location}}</text>
+            </view>
+          </view>
+          <view class="task-important {{item.priority > 0 ? 'active' : ''}}">
+            <text class="icon">{{utils.getPriorityEmoji(item.priority)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+  <view class="empty-tip" wx:elif="{{showEmpty}}">
+    {{emptyText}}
+  </view>
+</view>

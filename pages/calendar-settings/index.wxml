@@ -1,0 +1,41 @@
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <view class="section">
+    <view class="card">
+      <view class="card-row">
+        <view class="card-left">
+          <view class="card-icon">📅</view>
+          <view class="card-info">
+            <text class="card-name">一周起始日</text>
+            <text class="card-desc">设置日历星期显示的起始日</text>
+          </view>
+        </view>
+        <picker
+          mode="selector"
+          range="{{weekDays}}"
+          value="{{weekStartDay}}"
+          bindchange="changeWeekStartDay">
+          <view class="picker-value">
+            {{weekDays[weekStartDay]}}
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+      <view class="card-tip">💡 修改后，日历页面会自动重新排列</view>
+
+      <view class="card-divider"></view>
+
+      <view class="card-row">
+        <view class="card-left">
+          <view class="card-icon">✅</view>
+          <view class="card-info">
+            <text class="card-name">显示已完成任务</text>
+            <text class="card-desc">在日历日期详情中展示已完成任务</text>
+          </view>
+        </view>
+        <view class="switch {{showCompleted ? 'on' : 'off'}}" bindtap="toggleShowCompleted">
+          <view class="switch-knob"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

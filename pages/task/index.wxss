@@ -1,0 +1,417 @@
+.container {
+  height: calc(100vh - 50px - env(safe-area-inset-bottom));
+  background: var(--bg-page, #F7F7F7);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== 筛选栏 ========== */
+.filter-bar {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 24rpx 24rpx;
+  background: var(--bg-card, #fff);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.filter-slider {
+  position: absolute;
+  top: 16rpx;
+  height: 60rpx;
+  background: var(--primary-color, #07C160);
+  border-radius: 30rpx;
+  box-sizing: border-box;
+  will-change: left, width;
+  transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.filter-slider.slider-hidden {
+  opacity: 0;
+  transition: none;
+}
+
+.filter-btn {
+  flex: 1;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  color: var(--text-second);
+  transform: translateZ(0);
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s;
+}
+
+.filter-label {
+  font-size: 28rpx;
+  white-space: nowrap;
+}
+
+.filter-btn.active {
+  color: #fff;
+  box-shadow: none;
+  border: none;
+}
+
+/* ========== 搜索模块过渡 ========== */
+.search-wrap {
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: height 0.25s ease, opacity 0.25s ease;
+}
+
+/* ========== 内容区域 ========== */
+.content {
+  flex: 1;
+  min-height: 0;
+  padding: 0 24rpx;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.content.quadrant-view {
+  padding: 16rpx;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 内容切换动画 - 点击 */
+.content.anim-fade-in {
+  animation: contentFadeIn 0.22s ease-out both;
+}
+
+/* 内容切换动画 - 左滑进入 */
+.content.anim-slide-in-right {
+  animation: contentSlideInRight 0.25s ease-out both;
+}
+
+/* 内容切换动画 - 右滑进入 */
+.content.anim-slide-in-left {
+  animation: contentSlideInLeft 0.25s ease-out both;
+}
+
+@keyframes contentFadeIn {
+  from { opacity: 0; transform: translateY(8rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes contentSlideInRight {
+  from { opacity: 0; transform: translateX(40rpx); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes contentSlideInLeft {
+  from { opacity: 0; transform: translateX(-40rpx); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ========== 象限视图 ========== */
+.quadrant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16rpx;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.quadrant-section {
+  border-radius: 16rpx;
+  padding: 16rpx;
+  background: var(--bg-card, #fff);
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.quadrant-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 0;
+  border-bottom: 2rpx solid var(--border-color, #E5E5E5);
+  margin-bottom: 8rpx;
+  flex-shrink: 0;
+}
+
+.quadrant-icon {
+  font-size: 28rpx;
+  line-height: 1;
+}
+
+.quadrant-title {
+  flex: 1;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.quadrant-count {
+  font-size: 20rpx;
+  color: var(--text-tip);
+  background: var(--bg-secondary, #F0F0F0);
+  padding: 2rpx 10rpx;
+  border-radius: 10rpx;
+}
+
+.quadrant-tasks {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 象限颜色 */
+.quadrant-section.urgent-important {
+  border-top: 4rpx solid #fca5a5;
+}
+
+.quadrant-section.urgent {
+  border-top: 4rpx solid #fcd34d;
+}
+
+.quadrant-section.important {
+  border-top: 4rpx solid #93c5fd;
+}
+
+.quadrant-section.normal {
+  border-top: 4rpx solid #e0e0e0;
+}
+
+/* ========== 任务卡片（象限视图内） ========== */
+.task-card {
+  padding: 10rpx;
+  border-radius: 8rpx;
+  margin-bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.task-card.completed {
+  opacity: 0.5;
+}
+
+.task-status {
+  width: 44rpx;
+  height: 44rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 16rpx;
+  transition: all 0.3s ease;
+  background: var(--bg-card, #fff);
+}
+
+/* 根据优先级设置边框颜色 */
+.task-card.priority-0 .task-status { border-color: #d1d5db; }
+.task-card.priority-1 .task-status { border-color: #93c5fd; }
+.task-card.priority-2 .task-status { border-color: #fcd34d; }
+.task-card.priority-3 .task-status { border-color: #fca5a5; }
+
+.task-status.completed {
+  border-color: transparent;
+  background: transparent;
+}
+
+.task-status .icon {
+  display: inline-block;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.task-status.completed .icon {
+  font-size: 36rpx;
+  color: #90ee90;
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.3s ease;
+}
+
+/* 象限视图已完成状态优先级勾选颜色 */
+.task-card.priority-0 .task-status.completed .icon { color: #b0b0b0; }
+.task-card.priority-1 .task-status.completed .icon { color: #60a5fa; }
+.task-card.priority-2 .task-status.completed .icon { color: #fbbf24; }
+.task-card.priority-3 .task-status.completed .icon { color: #f87171; }
+
+/* 已完成且需要动画 - 播放对勾动画 */
+.task-status.completed.animate-icon .icon {
+  animation: scaleIn 0.4s ease-out forwards !important;
+}
+
+@keyframes scaleIn {
+  0% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 任务淡出动画 */
+@keyframes fadeOut {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.9); }
+}
+
+.task-card.fade-out {
+  animation: fadeOut 0.35s ease-out forwards;
+}
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.task-title {
+  font-size: 24rpx;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-title:active {
+  color: var(--text-second);
+  opacity: 0.7;
+}
+
+.task-card.completed .task-title {
+  color: var(--text-tip);
+}
+
+.empty-quadrant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tip);
+  font-size: 22rpx;
+}
+
+/* ========== 分组标题 ========== */
+.group-title {
+  font-size: 24rpx;
+  color: var(--text-tip);
+  padding: 16rpx 0 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.group-title:active {
+  opacity: 0.6;
+}
+
+.group-arrow {
+  font-size: 24rpx;
+  color: var(--text-tip);
+  transition: transform 0.2s;
+  transform: rotate(0deg);
+}
+
+.group-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+/* ========== 空状态 ========== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+  gap: 16rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: var(--text-tip);
+}
+
+.empty-tip {
+  font-size: 24rpx;
+  color: var(--text-tip);
+}
+
+/* ========== 加载状态 ========== */
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #07c160;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========== 添加按钮 ========== */
+.add-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(50px + 40rpx + env(safe-area-inset-bottom));
+  width: 120rpx;
+  height: 120rpx;
+  background: #07c160;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 56rpx;
+  box-shadow: 0 6rpx 20rpx rgba(7, 193, 96, 0.35);
+  z-index: 100;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.add-btn-visible {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.add-btn-hidden {
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.add-btn:active {
+  transform: scale(0.92);
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.25);
+}

@@ -1,0 +1,125 @@
+<view class="container {{settings.darkMode ? 'dark' : ''}}">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-info">
+      <view class="avatar-wrapper">
+        <image wx:if="{{userInfo.avatar}}" class="avatar" src="{{userInfo.avatar}}" mode="aspectFill"></image>
+        <view wx:else class="avatar-default">👤</view>
+      </view>
+      <view class="user-text">
+        <text class="nickname">{{userInfo.nickname}}</text>
+        <text class="welcome">欢迎使用 WeChat-Todo</text>
+      </view>
+    </view>
+    <view class="user-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalTasks}}</text>
+        <text class="stat-label">总任务</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value completed">{{stats.completedTasks}}</text>
+        <text class="stat-label">已完成</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value pending">{{stats.pendingTasks}}</text>
+        <text class="stat-label">待办中</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 通用设置 -->
+  <view class="setting-card" style="margin: 0 24rpx 24rpx;">
+    <view class="setting-row" bindtap="toggleDarkMode">
+      <view class="setting-left">
+        <view class="setting-info">
+          <text class="setting-name">🌙 深色模式</text>
+          <text class="setting-desc">切换应用显示主题</text>
+        </view>
+      </view>
+      <view class="switch {{settings.darkMode ? 'on' : 'off'}}">
+        <view class="switch-knob"></view>
+      </view>
+    </view>
+
+    <view class="setting-divider"></view>
+
+    <view class="setting-row" bindtap="toggleNotifications">
+      <view class="setting-left">
+        <view class="setting-info">
+          <text class="setting-name">🔔 消息通知</text>
+          <text class="setting-desc">任务到期提醒推送</text>
+        </view>
+      </view>
+      <view class="switch {{settings.notifications ? 'on' : 'off'}}">
+        <view class="switch-knob"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能管理 -->
+  <view class="setting-card" style="margin: 0 24rpx 24rpx;">
+    <view class="setting-row" bindtap="goCalendarSettings">
+      <view class="setting-left">
+        <view class="setting-info">
+          <text class="setting-name">📅 日历设置</text>
+          <text class="setting-desc">一周起始日、显示已完成任务</text>
+        </view>
+      </view>
+      <text class="setting-arrow">▾</text>
+    </view>
+
+    <view class="setting-divider"></view>
+
+    <view class="setting-row" bindtap="goCalculatorSettings">
+      <view class="setting-left">
+        <view class="setting-info">
+          <text class="setting-name">🧮 计算器设置</text>
+          <text class="setting-desc">管理计算器模块显示与排序</text>
+        </view>
+      </view>
+      <text class="setting-arrow">▾</text>
+    </view>
+
+    <view class="setting-divider"></view>
+
+    <view class="setting-row" bindtap="goDataManage">
+      <view class="setting-left">
+        <view class="setting-info">
+          <text class="setting-name">💾 数据管理</text>
+          <text class="setting-desc">存储、导入导出、云同步、数据清理</text>
+        </view>
+      </view>
+      <text class="setting-arrow">▾</text>
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="other-section">
+    <view class="section-title">
+      <text>其他</text>
+    </view>
+    
+    <view class="other-list">
+      <view
+        class="other-item"
+        wx:for="{{otherItems}}"
+        wx:key="action"
+        data-action="{{item.action}}"
+        bindtap="handleOtherTap">
+        <view class="other-content">
+          <text class="other-title">{{item.title}}</text>
+          <text class="other-subtitle">{{item.subtitle}}</text>
+        </view>
+        <text class="other-arrow">▾</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text">WeChat-Todo v{{version}}</text>
+    <text class="copyright">© 2024-{{currentYear}} WeChat-Todo Team</text>
+  </view>
+</view>

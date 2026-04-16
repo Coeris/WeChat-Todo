@@ -1,0 +1,108 @@
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <!-- 全局设置 -->
+  <view class="section">
+    <view class="global-card">
+      <view class="panel-row">
+        <view class="global-label-wrap">
+          <text class="panel-label">千分位显示</text>
+          <text class="global-desc">大数字显示为 1,234,567 格式</text>
+        </view>
+        <view
+          class="switch {{thousandsSeparator ? 'on' : 'off'}}"
+          catchtap="toggleThousandsSeparator"
+        >
+          <view class="switch-knob"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模块列表 -->
+  <view class="section">
+    <view
+      class="module-item {{item.enabled ? '' : 'disabled'}} {{item.expanded ? 'expanded' : ''}}"
+      wx:for="{{calculatorModules}}"
+      wx:key="id"
+    >
+      <!-- 外层：模块信息 + 排序 + 展开箭头 -->
+      <view class="module-row" catchtap="toggleExpand" data-index="{{index}}">
+        <view class="module-icon-wrap {{item.enabled ? '' : 'dimmed'}}">
+          <text class="module-icon">{{item.icon}}</text>
+        </view>
+        <view class="module-info">
+          <text class="module-name">{{item.name}}</text>
+          <text class="module-desc" wx:if="{{!item.enabled}}">未启用</text>
+        </view>
+        <view class="row-actions">
+          <view class="sort-btn {{index === 0 ? 'disabled' : ''}}" catchtap="moveUp" data-index="{{index}}">
+            <text class="sort-btn-icon">↑</text>
+          </view>
+          <view class="sort-btn {{index === calculatorModules.length - 1 ? 'disabled' : ''}}" catchtap="moveDown" data-index="{{index}}">
+            <text class="sort-btn-icon">↓</text>
+          </view>
+        </view>
+        <view class="expand-arrow {{item.expanded ? 'rotated' : ''}}">
+          <text class="arrow-icon">▾</text>
+        </view>
+      </view>
+
+      <!-- 展开面板 -->
+      <view class="module-panel" wx:if="{{item.expanded}}">
+        <view class="panel-divider"></view>
+
+        <!-- 启用开关 -->
+        <view class="panel-row">
+          <text class="panel-label">启用{{item.name}}</text>
+          <view
+            class="switch {{item.enabled ? 'on' : 'off'}}"
+            catchtap="toggleModule"
+            data-index="{{index}}"
+          >
+            <view class="switch-knob"></view>
+          </view>
+        </view>
+
+        <!-- 默认折叠 -->
+        <view class="panel-row">
+          <text class="panel-label">默认折叠</text>
+          <view
+            class="switch {{item.defaultCollapsed ? 'on' : 'off'}}"
+            catchtap="toggleCollapse"
+            data-index="{{index}}"
+          >
+            <view class="switch-knob"></view>
+          </view>
+        </view>
+
+        <!-- 百分比模块：涨跌颜色 -->
+        <block wx:if="{{item.id === 'percentage'}}">
+          <view class="panel-sub-title">涨跌颜色</view>
+          <view class="color-mode-options">
+            <view class="color-mode-btn {{item.percentColorMode === 'red-up' ? 'active' : ''}}" catchtap="onPercentColorModeChange" data-mode="red-up">
+              <view class="color-mode-preview">
+                <text class="color-dot c-red-dot">+</text>
+                <text class="color-dot c-green-dot">−</text>
+              </view>
+              <text class="color-mode-name">红涨绿跌</text>
+            </view>
+            <view class="color-mode-btn {{item.percentColorMode === 'green-up' ? 'active' : ''}}" catchtap="onPercentColorModeChange" data-mode="green-up">
+              <view class="color-mode-preview">
+                <text class="color-dot c-green-dot">+</text>
+                <text class="color-dot c-red-dot">−</text>
+              </view>
+              <text class="color-mode-name">绿涨红跌</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作区 -->
+  <view class="bottom-actions">
+    <view class="reset-btn" bindtap="resetToDefault">
+      <text class="reset-icon">↺</text>
+      <text class="reset-text">恢复默认</text>
+    </view>
+  </view>
+</view>

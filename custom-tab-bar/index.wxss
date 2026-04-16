@@ -1,0 +1,30 @@
+.tab-bar {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: #ffffff;
+  border-top: 0.5px solid #e5e5e5;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 暗色模式 */
+.tab-bar.dark {
+  background: #1e1e1e;
+  border-top-color: #333333;
+}
+
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+}
+
+.tab-bar-icon {
+  width: 24px;
+  height: 24px;
+}

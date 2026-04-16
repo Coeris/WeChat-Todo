@@ -1,0 +1,65 @@
+{
+  "pages": [
+    "pages/task/index",
+    "pages/task/edit/index",
+    "pages/calculator/index",
+    "pages/calendar/index",
+    "pages/settings/index",
+    "pages/data-manage/index",
+    "pages/calendar-settings/index",
+    "pages/calculator-settings/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat-Todo",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F7F7"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/task/index",
+        "text": "任务",
+        "iconPath": "assets/icons/task.png",
+        "selectedIconPath": "assets/icons/task-active.png"
+      },
+      {
+        "pagePath": "pages/calendar/index",
+        "text": "日历",
+        "iconPath": "assets/icons/calendar.png",
+        "selectedIconPath": "assets/icons/calendar-active.png"
+      },
+      {
+        "pagePath": "pages/calculator/index",
+        "text": "计算器",
+        "iconPath": "assets/icons/calculator.png",
+        "selectedIconPath": "assets/icons/calculator-active.png"
+      },
+      {
+        "pagePath": "pages/settings/index",
+        "text": "设置",
+        "iconPath": "assets/icons/settings.png",
+        "selectedIconPath": "assets/icons/settings-active.png"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于任务地点的导航"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ],
+  "lazyCodeLoading": "requiredComponents"
+}

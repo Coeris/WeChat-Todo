@@ -1,0 +1,187 @@
+<!-- 周行日期格子模板（复用于固定行、主日历、下一周行） -->
+<template name="weekRowDays">
+  <view class="wc-cal-week-row" style="height:{{rowHeight}}px">
+    <!-- 多天任务条（周级别绝对定位层） -->
+    <view class="wc-multi-layer" wx:if="{{multiDayBars && multiDayBars.length > 0}}">
+      <view
+        class="wc-multi-bar wc-day-task-p{{item.priority}}"
+        wx:for="{{multiDayBars}}"
+        wx:key="taskId"
+        style="left:{{item.startIdx * 100 / 7}}%;width:{{item.span * 100 / 7}}%;top:{{item.top}}px;height:{{item.height}}px"
+        bindtap="goToTaskDetail"
+        data-id="{{item.taskId}}">
+        <text class="wc-multi-bar-text" style="padding-left:{{item.textIdx > item.startIdx ? (item.textIdx - item.startIdx) * 100 / item.span : 0}}%">{{item.title}}</text>
+      </view>
+    </view>
+    <view
+      class="wc-day {{day.cd ? 'wc-day-today' : ''}} {{day.sel ? 'wc-day-selected' : ''}} {{day.hp ? 'wc-day-has-task' : ''}} {{day.we ? 'wc-day-weekend' : ''}}"
+      wx:for="{{days}}"
+      wx:for-item="day"
+      wx:key="id"
+      bindtap="onWeekDayTap"
+      data-source="{{source}}"
+      data-year="{{day.y}}"
+      data-month="{{day.m}}"
+      data-day="{{day.d}}">
+      <view class="wc-day-month-label" wx:if="{{day.ml}}">{{day.m}}月</view>
+      <text class="wc-day-num">{{day.d}}</text>
+      <!-- 农历 -->
+      <text class="wc-day-lunar wc-day-lunar-{{day.lunarType || 'day'}}" wx:if="{{day.lunarStr}}">{{day.lunarStr}}</text>
+      <!-- 任务标题（日期数字与圆点之间） -->
+      <view class="wc-day-task-labels" wx:if="{{day.titles && day.titles.length > 0}}">
+        <text
+          class="wc-day-task-text wc-day-task-p{{item.priority}}"
+          wx:for="{{day.titles}}"
+          wx:key="taskId"
+          style="{{item.multiDay ? 'visibility:hidden;height:0;overflow:hidden;padding:0;margin:0;' : ''}}"
+          catchtap="goToTaskDetail"
+          data-id="{{item.taskId}}">{{item.title}}</text>
+      </view>
+      <!-- 任务小圆点 / +N 溢出提示 -->
+      <view class="wc-day-dots" wx:if="{{day.he}}">
+        <text class="wc-day-dot-extra" wx:if="{{day.extraCount > 0}}">+{{day.extraCount}}</text>
+        <view class="wc-day-dot" wx:else></view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<view class="wx-calendar {{darkMode ? 'dark' : ''}} {{showTaskSheet ? 'show-sheet' : ''}}">
+  <!-- 顶部：月份标题 + 导航 -->
+  <view class="wc-header">
+    <view class="wc-header-left">
+      <view class="wc-month-label">
+        <input class="wc-year-input" type="number" value="{{displayYear}}" bindconfirm="onYearConfirm" bindblur="onYearConfirm" maxlength="4" placeholder="2026" />
+        <text class="wc-separator">年</text>
+        <view class="wc-nav-btn" bindtap="prevMonth">
+          <text class="wc-nav-icon">↶</text>
+        </view>
+        <input class="wc-month-input" type="number" value="{{displayMonth}}" bindconfirm="onMonthConfirm" bindblur="onMonthConfirm" maxlength="2" placeholder="3" />
+        <text class="wc-separator">月</text>
+      </view>
+      <view class="wc-nav-btn" bindtap="nextMonth">
+        <text class="wc-nav-icon">↷</text>
+      </view>
+      <view wx:if="{{!isCurrentMonthView}}" class="wc-today-btn" catchtap="backToToday">
+        <text>今</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 星期标题 -->
+  <view class="wc-weekdays">
+    <view class="wc-weekday {{item.we ? 'wc-weekday-weekend' : ''}}" wx:for="{{weekDays}}" wx:key="name">{{item.name}}</view>
+  </view>
+
+  <!-- 固定周行（任务面板打开时显示） -->
+  <view class="wc-pinned-week" wx:if="{{showTaskSheet && pinnedWeek}}" style="height:{{rowHeight}}px">
+    <template is="weekRowDays" data="{{days: pinnedWeek.days, source: 'pinned', rowHeight: rowHeight, multiDayBars: pinnedWeek.multiDayBars}}" />
+  </view>
+
+  <!-- 内联任务面板 -->
+  <view class="wc-task-panel" wx:if="{{showTaskSheet}}"
+    style="height:{{sheetHeight}}px">
+    <!-- 面板内容 -->
+    <view class="wc-sheet-body">
+      <!-- 顶部：日期信息 + 操作按钮 -->
+      <view class="wc-sheet-header">
+        <view class="wc-sheet-date-info">
+          <text class="wc-sheet-date-main">{{selectedDateWeek}} {{selectedDateLabel}}</text>
+        </view>
+        <view class="wc-sheet-right">
+          <view class="wc-task-count" wx:if="{{dayTasks.length > 0}}">{{dayTasks.length}}个待办</view>
+          <view class="wc-add-btn-sm" bindtap="addTask">
+            <text class="wc-add-icon-sm">+</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 任务列表 -->
+      <scroll-view class="wc-sheet-task-scroll" scroll-y enhanced show-scrollbar="{{false}}" bindtap="onSheetBlankTap">
+        <view class="wc-sheet-task-inner">
+        <!-- 未完成任务 -->
+        <block wx:if="{{dayTasks.length > 0}}">
+          <view class="wc-task-item priority-{{item.priority || 0}}" wx:for="{{dayTasks}}" wx:key="id" bindtap="goToTaskDetail" data-id="{{item.id}}">
+            <view class="wc-task-item-inner">
+              <view class="wc-task-checkbox {{item.completed ? 'completed' : ''}} {{item.animateIcon ? 'animate-icon' : ''}}" catchtap="toggleTaskComplete" data-source="pending" data-index="{{index}}">
+                <text class="wc-check-icon">✓</text>
+              </view>
+              <view class="wc-task-content">
+                <text class="wc-task-title">{{item.title}}</text>
+                <view class="wc-task-meta" wx:if="{{item.desc}}">
+                  <text class="wc-task-desc">{{item.desc}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+
+        <!-- 已完成任务 -->
+        <block wx:if="{{showCompleted && completedTasks.length > 0}}">
+          <view class="wc-completed-section">
+            <view class="wc-completed-title">已完成 ({{completedTasks.length}})</view>
+          </view>
+          <view class="wc-task-item wc-task-completed" wx:for="{{completedTasks}}" wx:key="id" bindtap="goToTaskDetail" data-id="{{item.id}}">
+            <view class="wc-task-item-inner">
+              <view class="wc-task-checkbox completed" catchtap="toggleTaskComplete" data-source="completed" data-index="{{index}}">
+                <text class="wc-check-icon">✓</text>
+              </view>
+              <view class="wc-task-content">
+                <text class="wc-task-title wc-title-done">{{item.title}}</text>
+              </view>
+            </view>
+          </view>
+        </block>
+
+        <!-- 显示已完成按钮 -->
+        <view class="wc-show-completed" wx:if="{{completedTasks.length > 0}}" bindtap="toggleShowCompleted">
+          <text class="wc-show-completed-text">{{showCompleted ? '收起已完成' : '显示已完成 (' + completedTasks.length + ')'}}</text>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="wc-empty" wx:if="{{dayTasks.length === 0 && completedTasks.length === 0}}">
+          <view class="wc-empty-icon">
+            <text class="wc-empty-icon-text">📋</text>
+          </view>
+          <text class="wc-empty-text">暂无日程安排</text>
+          <text class="wc-empty-hint">点击右上角 + 添加任务</text>
+        </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 连续滚动日历（虚拟渲染：仅渲染可见窗口 + 上下缓冲） -->
+  <scroll-view
+    class="wc-scroll {{showTaskSheet ? 'wc-scroll-collapsed' : ''}}"
+    scroll-y
+    scroll-top="{{scrollTopValue}}"
+    enhanced
+    show-scrollbar="{{false}}"
+    bindscroll="onScroll"
+    bindscrolltolower="loadMoreMonths"
+    bindscrolltoupper="loadPrevMonths"
+    lower-threshold="500"
+    upper-threshold="500">
+
+    <view class="wc-weeks-container">
+      <!-- 上方占位：保持滚动高度一致 -->
+      <view style="height:{{topSpacer}}px"></view>
+      <!-- 可见周窗口 -->
+      <view
+        class="wc-week-block"
+        wx:for="{{weeks}}"
+        wx:key="id"
+        id="week-{{item.y}}-{{item.m}}-{{item.d}}">
+        <template is="weekRowDays" data="{{days: item.days, source: 'calendar', rowHeight: rowHeight, multiDayBars: item.multiDayBars}}" />
+      </view>
+      <!-- 下方占位：保持滚动高度一致 -->
+      <view style="height:{{bottomSpacer}}px"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 下一周行（任务面板打开时显示） -->
+  <view class="wc-next-week" wx:if="{{showTaskSheet && nextWeek}}" style="height:{{rowHeight}}px">
+    <template is="weekRowDays" data="{{days: nextWeek.days, source: 'next', rowHeight: rowHeight, multiDayBars: nextWeek.multiDayBars}}" />
+  </view>
+</view>

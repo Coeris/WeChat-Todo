@@ -1,0 +1,428 @@
+<!-- 计算器页面 - 单页模式 -->
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <view class="modules-wrap">
+
+      <block wx:for="{{visibleModules}}" wx:key="id">
+
+        <!-- ========== 统计计算器 ========== -->
+        <view class="module-section" wx:if="{{item.id === 'statistics'}}">
+          <view class="module-header" bindtap="onToggleModule" data-id="{{item.id}}">
+            <text class="module-header-icon">{{item.icon}}</text>
+            <text class="module-header-title">{{item.title}}</text>
+            <text class="module-header-arrow {{collapsedModules[item.id] ? 'collapsed' : ''}}">▾</text>
+          </view>
+          <view class="card input-card" wx:if="{{!collapsedModules[item.id]}}">
+            <view class="input-list">
+              <view class="input-row" wx:for="{{numberRows}}" wx:key="rowIndex" wx:for-item="row">
+                <view class="input-item" wx:for="{{row}}" wx:key="index">
+                  <view class="input-chip">
+                    <text class="chip-label">{{item.label}}</text>
+                    <view class="chip-input-wrap">
+                      <input
+                        class="chip-input"
+                        type="text"
+                        placeholder="0"
+                        value="{{item.value}}"
+                        bindinput="onInputChange"
+                        bindconfirm="onInputConfirm"
+                        confirm-type="next"
+                        data-index="{{item.index}}"
+                      />
+                      <view class="chip-del-btn" wx:if="{{numbers.length > 1}}" catchtap="removeNumberInput" data-index="{{item.index}}">✕</view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+
+            <view class="stat-action-row">
+              <view class="stat-action-btn clear" wx:if="{{numbers.length > 0}}" bindtap="onClearAllTap">
+                <text class="stat-action-icon">✕</text>
+                <text>清空</text>
+              </view>
+              <view class="stat-action-btn add" wx:if="{{numbers.length < maxNumbers}}" bindtap="addNumberInput">
+                <text class="stat-action-icon">＋</text>
+                <text>添加</text>
+              </view>
+            </view>
+
+            <view class="sorted-preview" wx:if="{{sortedDisplay && result.count > 1}}" bindtap="onCopyText" data-text="{{sortedDisplay}}">
+              <text class="sorted-label">从小到大</text>
+              <text class="sorted-value">{{sortedDisplay}}</text>
+              <text class="sorted-copy-hint">复制</text>
+            </view>
+
+            <block wx:if="{{numbers.length > 0 && result.count > 0}}">
+              <view class="section-label">核心统计</view>
+              <view class="stat-grid">
+                <view class="stat-item" bindtap="onCopyText" data-text="{{result.sum}}">
+                  <text class="stat-label">总和</text>
+                  <text class="stat-value">{{result.sum}}</text>
+                </view>
+                <view class="stat-item" bindtap="onCopyText" data-text="{{result.average}}">
+                  <text class="stat-label">平均值</text>
+                  <text class="stat-value">{{result.average}}</text>
+                </view>
+                <view class="stat-item" bindtap="onCopyText" data-text="{{result.median}}">
+                  <text class="stat-label">中位数</text>
+                  <text class="stat-value">{{result.median}}</text>
+                </view>
+                <view class="stat-item">
+                  <text class="stat-label">个数</text>
+                  <text class="stat-value">{{result.count}}</text>
+                </view>
+              </view>
+
+              <view class="section-label">数据分布</view>
+              <view class="stat-grid">
+                <view class="stat-item" bindtap="onCopyText" data-text="{{result.max}}">
+                  <text class="stat-label">最大值</text>
+                  <text class="stat-value">{{result.max}}</text>
+                </view>
+                <view class="stat-item" bindtap="onCopyText" data-text="{{result.min}}">
+                  <text class="stat-label">最小值</text>
+                  <text class="stat-value">{{result.min}}</text>
+                </view>
+                <view class="stat-item" bindtap="onCopyText" data-text="{{result.range}}">
+                  <text class="stat-label">极差</text>
+                  <text class="stat-value">{{result.range}}</text>
+                </view>
+                <view class="stat-item" bindtap="onCopyText" data-text="{{result.stdDeviation}}">
+                  <text class="stat-label">标准差</text>
+                  <text class="stat-value">{{result.stdDeviation}}</text>
+                </view>
+              </view>
+
+              <view class="section-label">扩展统计</view>
+              <view class="detail-card">
+                <view class="detail-row" bindtap="onCopyText" data-text="{{result.variance}}">
+                  <text class="detail-label">方差</text>
+                  <text class="detail-value">{{result.variance}}</text>
+                </view>
+                <view class="detail-row" bindtap="onCopyText" data-text="{{result.product}}">
+                  <text class="detail-label">乘积</text>
+                  <text class="detail-value">{{result.product}}</text>
+                </view>
+                <view class="detail-row" wx:if="{{result.mode}}" bindtap="onCopyText" data-text="{{result.mode}}">
+                  <text class="detail-label">众数</text>
+                  <text class="detail-value">{{result.mode}}</text>
+                </view>
+                <view class="detail-row" wx:if="{{result.count >= 2}}" bindtap="onCopyText" data-text="{{result.growthRate + '%'}}">
+                  <text class="detail-label">增长率</text>
+                  <text class="detail-value {{result.growthRate === '∞' || parseFloat(result.growthRate) >= 0 ? 'c-green' : 'c-red'}}">{{result.growthRate}}%</text>
+                </view>
+              </view>
+
+              <block wx:if="{{result.count === 2}}">
+                <view class="section-label">数字关系</view>
+                <view class="detail-card">
+                  <view class="detail-row" bindtap="onCopyText" data-text="{{relationResult.difference}}">
+                    <text class="detail-label">A − B</text>
+                    <text class="detail-value">{{relationResult.difference}}</text>
+                  </view>
+                  <view class="detail-row" bindtap="onCopyText" data-text="{{relationResult.absoluteDifference}}">
+                    <text class="detail-label">|A − B|</text>
+                    <text class="detail-value">{{relationResult.absoluteDifference}}</text>
+                  </view>
+                  <view class="detail-row" bindtap="onCopyText" data-text="{{relationResult.quotient}}">
+                    <text class="detail-label">A ÷ B</text>
+                    <text class="detail-value">{{relationResult.quotient}}</text>
+                  </view>
+                  <view class="detail-row" bindtap="onCopyText" data-text="{{relationResult.percentage + '%'}}">
+                    <text class="detail-label">A 是 B 的</text>
+                    <text class="detail-value">{{relationResult.percentage}}%</text>
+                  </view>
+                  <view class="detail-row" bindtap="onCopyText" data-text="{{relationResult.percentageDiff + '%'}}">
+                    <text class="detail-label">相比 B 变化</text>
+                    <text class="detail-value {{relationResult.percentageDiff >= 0 ? 'c-green' : 'c-red'}}">{{relationResult.percentageDiff}}%</text>
+                  </view>
+                  <view class="detail-row" bindtap="onCopyText" data-text="{{relationResult.harmonicMean}}">
+                    <text class="detail-label">调和平均</text>
+                    <text class="detail-value">{{relationResult.harmonicMean}}</text>
+                  </view>
+                </view>
+              </block>
+
+              <block wx:if="{{result.count >= 2 && result.count <= 5}}">
+                <view class="section-label">比例分析</view>
+                <view class="detail-card">
+                  <view class="detail-row">
+                    <text class="detail-label">原始比例</text>
+                    <text class="detail-value">{{ratioResult.ratioString}}</text>
+                  </view>
+                  <view class="detail-row">
+                    <text class="detail-label">简化比例</text>
+                    <text class="detail-value">{{ratioResult.simplifiedRatioText}}</text>
+                  </view>
+                  <view class="ratio-bar-wrap">
+                    <view class="ratio-bar">
+                      <view
+                        class="ratio-segment"
+                        wx:for="{{ratioResult.segmentWidths}}"
+                        wx:for-index="idx"
+                        wx:key="idx"
+                        style="width: {{item}}; background-color: {{ratioResult.segmentColors[idx]}};"
+                      ></view>
+                    </view>
+                    <text class="ratio-text">{{ratioResult.percentageText}}</text>
+                  </view>
+                </view>
+              </block>
+            </block>
+
+
+
+          </view>
+        </view>
+
+        <!-- ========== 基础计算器 ========== -->
+        <view class="module-section" wx:if="{{item.id === 'basic'}}">
+          <view class="module-header" bindtap="onToggleModule" data-id="{{item.id}}">
+            <text class="module-header-icon">{{item.icon}}</text>
+            <text class="module-header-title">{{item.title}}</text>
+            <text class="module-header-arrow {{collapsedModules[item.id] ? 'collapsed' : ''}}">▾</text>
+          </view>
+          <view class="card input-card" wx:if="{{!collapsedModules[item.id]}}">
+            <view class="calc-display">
+              <text class="calc-expression" wx:if="{{basicCalc.formula}}">{{basicCalc.formula}}</text>
+              <text class="calc-result">{{basicCalc.displayText || basicCalc.display}}</text>
+            </view>
+            <view class="calc-keypad">
+              <view class="calc-key func" bindtap="onBasicCalcBtn" data-value="C">C</view>
+              <view class="calc-key func" bindtap="onBasicCalcBtn" data-value="DEL">
+                <text class="key-del-icon">⌫</text>
+              </view>
+              <view class="calc-key func" bindtap="onBasicCalcBtn" data-value="%">%</view>
+              <view class="calc-key op" bindtap="onBasicCalcBtn" data-value="/">÷</view>
+
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="7">7</view>
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="8">8</view>
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="9">9</view>
+              <view class="calc-key op" bindtap="onBasicCalcBtn" data-value="*">×</view>
+
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="4">4</view>
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="5">5</view>
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="6">6</view>
+              <view class="calc-key op" bindtap="onBasicCalcBtn" data-value="-">−</view>
+
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="1">1</view>
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="2">2</view>
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value="3">3</view>
+              <view class="calc-key op" bindtap="onBasicCalcBtn" data-value="+">+</view>
+
+              <view class="calc-key func" bindtap="onBasicCalcBtn" data-value="±">±</view>
+              <view class="calc-key zero" bindtap="onBasicCalcBtn" data-value="0">0</view>
+              <view class="calc-key" bindtap="onBasicCalcBtn" data-value=".">.</view>
+              <view class="calc-key equal" bindtap="onBasicCalcBtn" data-value="=">=</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- ========== 百分比计算器 ========== -->
+        <view class="module-section" wx:if="{{item.id === 'percentage'}}">
+          <view class="module-header" bindtap="onToggleModule" data-id="{{item.id}}">
+            <text class="module-header-icon">{{item.icon}}</text>
+            <text class="module-header-title">{{item.title}}</text>
+            <text class="module-header-arrow {{collapsedModules[item.id] ? 'collapsed' : ''}}">▾</text>
+          </view>
+          <view class="card input-card" wx:if="{{!collapsedModules[item.id]}}">
+            <view class="field-group">
+              <view class="field-row">
+                <text class="field-label">数值：</text>
+                <input class="field-input" type="text" placeholder="" value="{{percentCalc.num1}}" bindinput="onPercentCalcInput" data-field="num1" confirm-type="next" bindconfirm="onPercentNum1Confirm" focus="{{percentFocus}}" />
+                <view class="wx-btn wx-btn-plain price-inline-btn" bindtap="onPercentCalcClear">
+                  <text>清空</text>
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label">百分比：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{percentCalc.num2 + (percentCalc.num2 && !percentNum2Focused ? '%' : '')}}" bindinput="onPercentCalcInput" data-field="num2" bindfocus="onPercentNum2Focus" bindblur="onPercentNum2Blur" confirm-type="done" bindconfirm="onPercentNum2Confirm" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label">折扣：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{percentCalc.discount + (percentCalc.discount && !discountFocused ? '折' : '')}}" bindinput="onPercentDiscountInput" bindfocus="onDiscountFocus" bindblur="onDiscountBlur" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label">差值：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{percentCalc.result1}}" bindinput="onPercentResultInput" data-field="result1" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label">增加后：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input {{percentColorMode === 'red-up' ? 'c-red-input' : 'c-green-input'}}" type="text" placeholder="" value="{{percentCalc.result2}}" bindinput="onPercentResultInput" data-field="result2" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label">减少后：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input {{percentColorMode === 'red-up' ? 'c-green-input' : 'c-red-input'}}" type="text" placeholder="" value="{{percentCalc.result3}}" bindinput="onPercentResultInput" data-field="result3" />
+                </view>
+              </view>
+            </view>
+
+          </view>
+        </view>
+
+        <!-- ========== 单价换算 ========== -->
+        <view class="module-section" wx:if="{{item.id === 'price'}}">
+          <view class="module-header" bindtap="onToggleModule" data-id="{{item.id}}">
+            <text class="module-header-icon">{{item.icon}}</text>
+            <text class="module-header-title">{{item.title}}</text>
+            <text class="module-header-arrow {{collapsedModules[item.id] ? 'collapsed' : ''}}">▾</text>
+          </view>
+          <view class="card input-card" wx:if="{{!collapsedModules[item.id]}}">
+            <!-- 分类切换 -->
+            <view class="price-category-wrap">
+              <view class="price-category-list">
+                <view class="price-category-btn {{priceConvert.category === item.key ? 'active' : ''}}"
+                      wx:for="{{priceCategoryList}}" wx:key="key"
+                      bindtap="onPriceCategoryTap" data-key="{{item.key}}">
+                  <text>{{item.label}}</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="field-group">
+              <view class="field-row">
+                <view class="field-input-wrap">
+                  <view class="field-input-inner">
+                    <input class="field-input has-clear" type="text" placeholder="数量" value="{{priceConvert.quantity}}" bindinput="onPriceConvertQuantityInput" bindblur="onPriceConvertQtyBlur" confirm-type="next" bindconfirm="onPriceQtyConfirm" focus="{{priceFocusIndex === 0}}" />
+                    <view class="input-clear-btn" wx:if="{{priceConvert.quantity}}" bindtap="onPriceConvertClearField" data-field="quantity">✕</view>
+                  </view>
+                  <view class="unit-toggle-group">
+                    <view class="unit-quick-btn {{priceConvert.quantityUnit === idx ? 'active' : ''}}" bindtap="onPriceConvertUnitTap" data-index="{{idx}}" wx:for="{{priceQuantityUnits}}" wx:key="name" wx:for-index="idx" wx:if="{{!item.group}}">{{item.name}}</view>
+                    <view class="unit-picker-btn {{priceConvert.quantityUnit >= priceQuickUnitCount ? 'active' : ''}}" bindtap="onUnitPickerOpen" wx:if="{{priceQuantityUnitGroups.length > 0}}">
+                      <text class="unit-picker-text">{{priceConvert.quantityUnit >= priceQuickUnitCount ? priceQuantityUnits[priceConvert.quantityUnit].name : '更多'}}</text>
+                      <text class="unit-picker-arrow">▾</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              <view class="field-row">
+                <view class="field-input-wrap">
+                  <view class="field-input-inner">
+                    <input class="field-input has-clear" type="text" placeholder="总价" value="{{priceConvert.totalAmount}}" bindinput="onPriceConvertTotalAmountInput" bindblur="onPriceConvertTotalBlur" confirm-type="done" bindconfirm="onPriceTotalConfirm" focus="{{priceFocusIndex === 1}}" />
+                    <view class="input-clear-btn" wx:if="{{priceConvert.totalAmount}}" bindtap="onPriceConvertClearField" data-field="totalAmount">✕</view>
+                  </view>
+                  <text class="field-suffix">元</text>
+                </view>
+                <view class="wx-btn wx-btn-plain price-inline-btn" bindtap="onPriceConvertClear">
+                  <text>清除</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="price-result-grid">
+              <view class="price-card" wx:for="{{priceUnitCards}}" wx:key="key">
+                <view class="price-card-label">{{item.label}}<text class="price-card-sub" wx:if="{{item.sub}}">{{item.sub}}</text></view>
+                <view class="price-card-input-wrap">
+                  <input class="price-card-input" type="text" placeholder="{{index === 0 ? '单价' : ''}}" placeholder-class="price-card-input-placeholder" value="{{priceConvert[item.key]}}" bindinput="onPriceConvertInput" data-unit="{{item.key}}" confirm-type="done" bindblur="onPriceConvertBlur" />
+                  <view class="price-card-clear" wx:if="{{priceConvert[item.key]}}" bindtap="onPriceConvertClearUnitPrice">✕</view>
+                </view>
+              </view>
+            </view>
+
+          </view>
+        </view>
+
+        <!-- ========== 股市计算器 ========== -->
+        <view class="module-section" wx:if="{{item.id === 'stock'}}">
+          <view class="module-header" bindtap="onToggleModule" data-id="{{item.id}}">
+            <text class="module-header-icon">{{item.icon}}</text>
+            <text class="module-header-title">{{item.title}}</text>
+            <text class="module-header-arrow {{collapsedModules[item.id] ? 'collapsed' : ''}}">▾</text>
+          </view>
+          <view class="card input-card" wx:if="{{!collapsedModules[item.id]}}">
+            <view class="field-group">
+              <view class="field-row">
+                <text class="field-label stock-label">买入价：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{stockCalc.buyPrice + (stockCalc.buyPrice && !stockFocused.buyPrice ? '元/股' : '')}}" bindinput="onStockCalcInput" data-field="buyPrice" bindfocus="onStockFocus" bindblur="onStockBlur" confirm-type="next" />
+                </view>
+                <view class="wx-btn wx-btn-plain price-inline-btn" bindtap="onStockCalcClear">
+                  <text>清空</text>
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label stock-label">卖出价：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{stockCalc.sellPrice + (stockCalc.sellPrice && !stockFocused.sellPrice ? '元/股' : '')}}" bindinput="onStockCalcInput" data-field="sellPrice" bindfocus="onStockFocus" bindblur="onStockBlur" confirm-type="next" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label stock-label">股数：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{stockCalc.shares + (stockCalc.shares && !stockFocused.shares ? '股' : '')}}" bindinput="onStockCalcInput" data-field="shares" bindfocus="onStockFocus" bindblur="onStockBlur" confirm-type="done" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label stock-label">买入总额：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{stockCalc.totalBuyPrice + (stockCalc.totalBuyPrice && !stockFocused.totalBuyPrice ? '元' : '')}}" bindinput="onStockCalcInput" data-field="totalBuyPrice" bindfocus="onStockFocus" bindblur="onStockBlur" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label stock-label">卖出总额：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input" type="text" placeholder="" value="{{stockCalc.totalSellPrice + (stockCalc.totalSellPrice && !stockFocused.totalSellPrice ? '元' : '')}}" bindinput="onStockCalcInput" data-field="totalSellPrice" bindfocus="onStockFocus" bindblur="onStockBlur" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label stock-label">盈亏：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input {{stockCalc.isProfit ? 'c-green-input' : 'c-red-input'}}" type="text" placeholder="" value="{{stockCalc.profit + (stockCalc.profit && !stockFocused.profit ? '元' : '')}}" bindinput="onStockCalcInput" data-field="profit" bindfocus="onStockFocus" bindblur="onStockBlur" />
+                </view>
+              </view>
+              <view class="field-row">
+                <text class="field-label stock-label">盈亏率：</text>
+                <view class="field-input-wrap">
+                  <input class="field-input {{stockCalc.isProfit ? 'c-green-input' : 'c-red-input'}}" type="text" placeholder="" value="{{stockCalc.profitPercent + (stockCalc.profitPercent && !stockFocused.profitPercent ? '%' : '')}}" bindinput="onStockCalcInput" data-field="profitPercent" bindfocus="onStockFocus" bindblur="onStockBlur" />
+                </view>
+              </view>
+              <text class="stock-hint">* 忽略手续费等费用</text>
+            </view>
+          </view>
+        </view>
+
+      </block>
+
+    </view>
+
+  <!-- 数量单位分组选择弹窗 -->
+  <view class="unit-picker-mask" wx:if="{{showUnitPicker}}">
+    <view class="unit-picker-mask-area" bindtap="onUnitPickerClose" catchtouchmove="preventTouchMove"></view>
+    <view class="unit-picker-popup" style="height: {{pickerPopupHeight}}px;">
+      <view class="unit-picker-header" catchtouchmove="preventTouchMove">
+        <text class="unit-picker-title">选择数量单位</text>
+        <text class="unit-picker-close" bindtap="onUnitPickerClose">✕</text>
+      </view>
+      <scroll-view scroll-y class="unit-picker-body" enhanced show-scrollbar="{{false}}">
+        <view class="unit-picker-scroll-inner">
+          <view class="unit-picker-group" wx:for="{{priceQuantityUnitGroups}}" wx:key="label">
+            <text class="unit-picker-group-label">{{item.label}}</text>
+            <view class="unit-picker-group-list">
+              <view
+                class="unit-picker-item {{priceConvert.quantityUnit === unit.originalIndex ? 'active' : ''}}"
+                wx:for="{{item.units}}"
+                wx:for-item="unit"
+                wx:key="originalIndex"
+                bindtap="onExtraUnitSelect"
+                data-idx="{{unit.originalIndex}}"
+              >
+                <text>{{unit.name}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="unit-picker-bottom-line"></view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+</view>

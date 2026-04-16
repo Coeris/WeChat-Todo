@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "任务",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "task-list": "/components/task-list/index",
+    "search-module": "/components/search-module/index"
+  }
+}

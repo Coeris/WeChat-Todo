@@ -1,0 +1,324 @@
+<view class="container {{darkMode ? 'dark' : ''}}">
+  <view class="form-container">
+    <!-- 优先级选择 -->
+    <view class="form-item">
+      <view class="priority-selector">
+        <view 
+          class="priority-btn {{form.priority === 0 ? 'active' : ''}}"
+          bindtap="setPriority"
+          data-priority="0">
+          😐 普通
+        </view>
+        <view 
+          class="priority-btn {{form.priority === 1 ? 'active' : ''}}"
+          bindtap="setPriority"
+          data-priority="1">
+          ⭐ 重要
+        </view>
+        <view 
+          class="priority-btn {{form.priority === 2 ? 'active' : ''}}"
+          bindtap="setPriority"
+          data-priority="2">
+          ⚡ 紧急
+        </view>
+        <view 
+          class="priority-btn {{form.priority === 3 ? 'active' : ''}}"
+          bindtap="setPriority"
+          data-priority="3">
+          🔥 重要紧急
+        </view>
+      </view>
+    </view>
+
+    <!-- 任务标题 & 备注 -->
+    <view class="form-item">
+      <view class="title-input-wrapper">
+        <textarea
+          class="title-input"
+          placeholder="准备做什么？"
+          value="{{form.title}}"
+          bindinput="onInput"
+          bindfocus="onTitleFocus"
+          bindblur="onTitleBlur"
+          data-field="title"
+          maxlength="100"
+          placeholder-class="placeholder"
+          auto-height
+          cursor-spacing="10"
+        />
+      </view>
+      <view class="notes-divider"></view>
+      <textarea
+        class="textarea"
+        placeholder="备注..."
+        value="{{form.notes}}"
+        bindinput="onInput"
+        data-field="notes"
+        maxlength="500"
+        placeholder-class="placeholder"
+        auto-height
+      />
+    </view>
+
+    <!-- 时间设置 -->
+    <view class="form-item">
+      <!-- 日期开关 -->
+      <view class="time-toggle-row" bindtap="toggleStartTime">
+        <text class="time-toggle-icon">📅</text>
+        <text class="time-toggle-label">日期时间</text>
+        <text class="time-toggle-arrow {{showStartTime ? 'expanded' : ''}}">▾</text>
+      </view>
+
+      <!-- 时间输入区域（展开时显示） -->
+      <view class="time-detail-section" wx:if="{{showStartTime}}">
+        <!-- 开始时间行 -->
+        <view class="time-inputs-row">
+          <view class="time-date-wrap">
+            <picker mode="date" value="{{startTime.dateValue}}" bindchange="onStartDatePick">
+              <text class="input-icon">开始日期🗓：</text>
+            </picker>
+            <view class="time-group">
+              <input class="time-seg-input" type="digit" maxlength="4" placeholder="{{currentTimeParts.year}}" value="{{startTime.year}}" bindinput="onStartTimeUnitInput" bindblur="onStartTimeBlur" data-unit="year" placeholder-class="time-placeholder" />
+              <text class="time-seg-sep">-</text>
+              <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.month}}" value="{{startTime.month}}" bindinput="onStartTimeUnitInput" bindblur="onStartTimeBlur" data-unit="month" placeholder-class="time-placeholder" />
+              <text class="time-seg-sep">-</text>
+              <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.day}}" value="{{startTime.day}}" bindinput="onStartTimeUnitInput" bindblur="onStartTimeBlur" data-unit="day" placeholder-class="time-placeholder" />
+            </view>
+          </view>
+          <view class="time-time-wrap">
+            <picker mode="time" value="{{startTime.timeValue}}" bindchange="onStartTimePick">
+              <text class="input-icon">时间⏰：</text>
+            </picker>
+            <view class="time-group time-group-time">
+              <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.hour}}" value="{{startTime.hour}}" bindinput="onStartTimeUnitInput" bindblur="onStartTimeBlur" data-unit="hour" placeholder-class="time-placeholder" />
+              <text class="time-seg-sep">:</text>
+              <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.minute}}" value="{{startTime.minute}}" bindinput="onStartTimeUnitInput" bindblur="onStartTimeBlur" data-unit="minute" placeholder-class="time-placeholder" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 结束时间行 -->
+        <view class="end-time-section">
+          <view class="time-inputs-row">
+            <view class="time-date-wrap">
+              <picker mode="date" value="{{endTime.dateValue}}" bindchange="onEndDatePick">
+                <text class="input-icon">结束日期🗓：</text>
+              </picker>
+              <view class="time-group">
+                <input class="time-seg-input" type="digit" maxlength="4" placeholder="{{currentTimeParts.year}}" value="{{endTime.year}}" bindinput="onEndTimeUnitInput" bindblur="onEndTimeBlur" data-unit="year" placeholder-class="time-placeholder" />
+                <text class="time-seg-sep">-</text>
+                <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.month}}" value="{{endTime.month}}" bindinput="onEndTimeUnitInput" bindblur="onEndTimeBlur" data-unit="month" placeholder-class="time-placeholder" />
+                <text class="time-seg-sep">-</text>
+                <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.day}}" value="{{endTime.day}}" bindinput="onEndTimeUnitInput" bindblur="onEndTimeBlur" data-unit="day" placeholder-class="time-placeholder" />
+              </view>
+            </view>
+            <view class="time-time-wrap">
+              <picker mode="time" value="{{endTime.timeValue}}" bindchange="onEndTimePick">
+                <text class="input-icon">时间⏰：</text>
+              </picker>
+              <view class="time-group time-group-time">
+                <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.hour}}" value="{{endTime.hour}}" bindinput="onEndTimeUnitInput" bindblur="onEndTimeBlur" data-unit="hour" placeholder-class="time-placeholder" />
+                <text class="time-seg-sep">:</text>
+                <input class="time-seg-input time-seg-input-sm" type="digit" maxlength="2" placeholder="{{currentTimeParts.minute}}" value="{{endTime.minute}}" bindinput="onEndTimeUnitInput" bindblur="onEndTimeBlur" data-unit="minute" placeholder-class="time-placeholder" />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="repeat-row">
+        <view class="repeat-label" bindtap="toggleRepeat">
+          <text class="repeat-checkbox {{form.repeat ? 'checked' : ''}}">
+            {{form.repeat ? '✓' : ''}}
+          </text>
+          <text>重复任务</text>
+        </view>
+        <view class="repeat-value" bindtap="showRepeatPicker" wx:if="{{form.repeat}}">
+          {{repeatLabel}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 附件 -->
+    <view class="form-item">
+      <view class="label">
+        <text>附件</text>
+        <view class="add-btn" bindtap="showAttachmentMenu">
+          <text>+</text>
+        </view>
+      </view>
+      
+      <view class="attachment-list" wx:if="{{attachments.length > 0}}">
+        <view 
+          class="attachment-item"
+          wx:for="{{attachments}}"
+          wx:key="index">
+          <view class="attachment-icon" bindtap="previewAttachment" data-index="{{index}}">
+            <text>{{item.type === 'image' ? '🖼️' : (item.type === 'voice' ? '🎤' : '📄')}}</text>
+          </view>
+          <view class="attachment-info" bindtap="previewAttachment" data-index="{{index}}">
+            <text class="attachment-name">{{item.type === 'image' ? '图片' : (item.type === 'voice' ? '语音' : (item.name || '文档'))}}</text>
+            <text class="attachment-size">{{item.size || item.duration || ''}}</text>
+          </view>
+          <view class="delete-icon" bindtap="deleteAttachment" data-index="{{index}}">
+            <text>×</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 扩展模块按钮 -->
+    <view class="module-bar">
+      <view class="module-btn {{showLocationPanel ? 'active' : (form.locations.length > 0 ? 'has-content' : '')}}" bindtap="toggleLocationPanel">
+        <text>📍 地点</text>
+      </view>
+      <view class="module-btn {{showLinkPanel ? 'active' : (form.links.length > 0 ? 'has-content' : '')}}" bindtap="toggleLinkPanel">
+        <text>🔗 链接</text>
+      </view>
+      <view class="module-btn {{showSubtaskPanel ? 'active' : (subtasks.length > 0 ? 'has-content' : '')}}" bindtap="toggleSubtaskPanel">
+        <text>📋 子任务</text>
+      </view>
+    </view>
+
+    <!-- 地点面板 -->
+    <view class="form-item module-panel" wx:if="{{showLocationPanel}}">
+      <view class="location-list">
+        <view
+          class="location-item"
+          wx:for="{{form.locations}}"
+          wx:key="index">
+          <view class="location-input-wrap">
+            <input
+              class="location-input"
+              type="text"
+              placeholder="输入地点名称"
+              value="{{item.text}}"
+              bindinput="updateLocation"
+              data-index="{{index}}"
+              placeholder-class="placeholder"
+            />
+            <view class="location-map-btn" bindtap="chooseLocation" data-index="{{index}}">
+              <text>🌏</text>
+            </view>
+          </view>
+          <view class="location-delete" bindtap="deleteLocation" data-index="{{index}}">
+            <text>×</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 链接面板 -->
+    <view class="form-item module-panel" wx:if="{{showLinkPanel}}">
+      <view class="link-list">
+        <view
+          class="link-item"
+          wx:for="{{form.links}}"
+          wx:key="index">
+          <view class="link-input-wrap">
+            <input
+              class="link-input"
+              type="text"
+              placeholder="输入链接地址"
+              value="{{item}}"
+              bindinput="updateLink"
+              data-index="{{index}}"
+              placeholder-class="placeholder"
+            />
+            <view class="link-go-btn" bindtap="openLink" data-index="{{index}}">
+              <text>🔗</text>
+            </view>
+          </view>
+          <view class="link-delete" bindtap="deleteLink" data-index="{{index}}">
+            <text>×</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 子任务面板 -->
+    <view class="form-item module-panel" wx:if="{{showSubtaskPanel}}">
+      <view class="subtask-list">
+        <view 
+          class="subtask-row"
+          wx:for="{{subtasks}}"
+          wx:key="id">
+          <view class="subtask-item">
+            <view 
+              class="subtask-checkbox {{item.completed ? 'completed' : ''}}"
+              bindtap="toggleSubtask"
+              data-index="{{index}}">
+              <text class="icon">✓</text>
+            </view>
+            <input
+              class="subtask-input {{item.completed ? 'completed' : ''}}"
+              type="text"
+              placeholder="输入子任务名称"
+              value="{{item.title && item.title !== '_new_' ? item.title : ''}}"
+              focus="{{item._focus}}"
+              bindinput="updateSubtaskTitle"
+              bindconfirm="onSubtaskInputConfirm"
+              data-index="{{index}}"
+            />
+            <view wx:if="{{item.title && item.title !== '_new_'}}" class="subtask-goto" bindtap="onSubtaskTap" data-index="{{index}}">
+              <text>☞</text>
+            </view>
+          </view>
+          <view class="subtask-delete" bindtap="deleteSubtask" data-index="{{index}}">
+            <text>×</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 创建信息（仅编辑模式显示） -->
+    <view class="form-item info-section" wx:if="{{isEdit}}">
+      <view class="label">创建信息</view>
+      <view class="info-row" wx:if="{{createTimeDisplay}}">
+        <text class="info-label">创建时间：</text>
+        <text class="info-value">{{createTimeDisplay}}</text>
+      </view>
+      <view class="info-row" wx:if="{{updateTimeDisplay}}">
+        <text class="info-label">更新时间：</text>
+        <text class="info-value">{{updateTimeDisplay}}</text>
+      </view>
+      <view class="info-row" wx:if="{{completedAtDisplay}}">
+        <text class="info-label">完成时间：</text>
+        <text class="info-value">{{completedAtDisplay}}</text>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="footer">
+    <view class="footer-row" wx:if="{{isEdit}}">
+      <view class="btn-complete {{completed ? 'completed' : ''}}" bindtap="toggleComplete">
+        <text>{{completed ? '已完成' : '未完成'}}</text>
+      </view>
+      <view class="delete-btn" bindtap="deleteTask">删除</view>
+    </view>
+    <view class="footer-row">
+      <view class="cancel-btn" bindtap="cancelEdit">取消</view>
+      <view class="save-btn" bindtap="manualSave">保存</view>
+    </view>
+  </view>
+</view>
+
+<!-- 重复选择器弹窗 -->
+<view class="modal-mask" wx:if="{{showRepeatPicker}}" bindtap="hideRepeatPicker">
+  <view class="modal-content" catchtap="">
+    <view class="modal-title">选择重复周期</view>
+    <view class="reminder-options">
+      <view 
+        class="reminder-option {{form.repeat === item.value ? 'active' : ''}}"
+        wx:for="{{repeatOptions}}"
+        wx:key="value"
+        bindtap="selectRepeat"
+        data-value="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+</view>

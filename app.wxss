@@ -1,0 +1,504 @@
+/* 全局样式 */
+page {
+  background: #F7F7F7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --primary-color: #07C160;
+  --danger-color: #FA5151;
+  --warning-color: #FF9C00;
+  --info-color: #576B95;
+  --text-main: #000000;
+  --text-second: #7F7F7F;
+  --text-tip: #B2B2B2;
+  --border-color: #E5E5E5;
+  --card-bg: #ffffff;
+  --bg-page: #F7F7F7;
+  --bg-input: #F0F0F0;
+}
+
+/* ==================== 深色模式变量覆盖 ==================== */
+.container.dark {
+  --primary-color: #07C160;
+  --danger-color: #FA5151;
+  --warning-color: #FF9C00;
+  --info-color: #576B95;
+  --text-main: #ffffff;
+  --text-second: rgba(255, 255, 255, 0.6);
+  --text-tip: rgba(255, 255, 255, 0.4);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --card-bg: #1e293b;
+  --bg-page: #191919;
+  --bg-input: #2a2a2a;
+}
+
+/* 深色模式 - 页面背景 */
+.container.dark {
+  background: #191919 !important;
+}
+
+/* 深色模式 - 卡片背景 */
+.container.dark .card,
+.container.dark .setting-card,
+.container.dark .stats-card,
+.container.dark .progress-card,
+.container.dark .menu-list,
+.container.dark .other-list,
+.container.dark .section,
+.container.dark .info-card,
+.container.dark .progress-section,
+.container.dark .tasks-section,
+.container.dark .project-list {
+  background: #1e293b !important;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 深色模式 - 项目卡片 */
+.container.dark .project-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-left-color: rgba(7, 193, 96, 0.6) !important;
+}
+
+.container.dark .project-status.active {
+  background: rgba(7, 193, 96, 0.15) !important;
+  color: #07C160 !important;
+}
+
+.container.dark .project-status.completed {
+  background: rgba(56, 142, 60, 0.15) !important;
+  color: #388e3c !important;
+}
+
+/* 深色模式 - 功能网格 */
+.container.dark .function-item {
+  background: #1e293b !important;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 深色模式 - 筛选栏 */
+.container.dark .filter-bar {
+  background: #1e293b !important;
+}
+
+.container.dark .filter-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.container.dark .filter-btn.active {
+  background: #07c160 !important;
+  color: #fff !important;
+}
+
+/* 深色模式 - 象限视图 */
+.container.dark .quadrant-section {
+  background: #1e293b !important;
+}
+
+.container.dark .quadrant-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.container.dark .quadrant-count {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.container.dark .task-status {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.container.dark .task-card.priority-0 .task-status {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.container.dark .task-card.priority-1 .task-status {
+  border-color: rgba(147, 197, 253, 0.6) !important;
+}
+
+.container.dark .task-card.priority-2 .task-status {
+  border-color: rgba(252, 211, 77, 0.6) !important;
+}
+
+.container.dark .task-card.priority-3 .task-status {
+  border-color: rgba(252, 165, 165, 0.6) !important;
+}
+
+/* 深色模式 - 进度条 */
+.container.dark .progress-bar {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.container.dark .progress-bar-large {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 深色模式 - 分割线 */
+.container.dark .setting-divider,
+.container.dark .divider {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 深色模式 - 弹窗 */
+.container.dark .modal-mask,
+.container.dark .modal > .modal-mask {
+  background: rgba(0, 0, 0, 0.7) !important;
+}
+
+.container.dark .modal-content,
+.container.dark .modal > .modal-content {
+  background: #1e293b !important;
+}
+
+.container.dark .modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 深色模式 - 表单 */
+.container.dark .form-input,
+.container.dark .form-textarea,
+.container.dark .picker-value {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 深色模式 - 统计详情 */
+.container.dark .stats-detail,
+.container.dark .stat-box-large:not(.primary):not(.success):not(.warning):not(.danger) {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.container.dark .detail-item {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 深色模式 - 模块设置 */
+.container.dark .module-list {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.container.dark .module-item:not(:last-child) {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.container.dark .module-icon {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.container.dark .module-switch {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 深色模式 - WebDAV */
+.container.dark .webdav-status {
+  background: rgba(56, 189, 248, 0.1) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.container.dark .webdav-help {
+  background: rgba(251, 191, 36, 0.1) !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+}
+
+.container.dark .form-item.switch-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 深色模式 - 加载遮罩 */
+.container.dark .loading-mask {
+  background: rgba(25, 25, 25, 0.8) !important;
+}
+
+/* 深色模式 - 控制按钮 */
+.container.dark .control-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 深色模式 - 任务选择 */
+.container.dark .task-select-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 深色模式 - 危险操作 */
+.container.dark .danger-row:active {
+  background: rgba(250, 81, 81, 0.1) !important;
+}
+
+/* 深色模式 - 弹窗底部 */
+.container.dark .modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* 通用布局 */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* 文本截断 */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* 卡片样式 */
+.card {
+  background: var(--card-bg);
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 按钮样式 */
+.btn {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn:active {
+  opacity: 0.7;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #f5f7fa;
+  color: var(--text-second);
+}
+
+.btn-danger {
+  background: #fff1f0;
+  color: var(--danger-color);
+}
+
+/* 标签样式 */
+.tag {
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.tag-primary {
+  background: #e6f9ed;
+  color: var(--primary-color);
+}
+
+.tag-warning {
+  background: #fff7e6;
+  color: var(--warning-color);
+}
+
+.tag-danger {
+  background: #fff1f0;
+  color: var(--danger-color);
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: var(--border-color);
+  margin: 24rpx 0;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: var(--text-main);
+  margin-bottom: 12rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  color: var(--text-tip);
+}
+
+/* 加载动画 */
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 悬浮按钮 */
+.fab-button {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
+  width: 100rpx;
+  height: 100rpx;
+  background: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 60rpx;
+  box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.3);
+  z-index: 100;
+}
+
+.fab-button:active {
+  transform: scale(0.9);
+}
+
+/* 淡入动画 */
+@keyframes fade-in {
+  from {
+    transform: translateY(20rpx);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 弹性动画 */
+.bounce {
+  animation: bounce 0.6s ease-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* 渐变文字 */
+.gradient-text {
+  background: #07c160;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 阴影 */
+.shadow-sm {
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.shadow-md {
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+/* 圆角 */
+.radius-sm {
+  border-radius: 8rpx;
+}
+
+.radius-md {
+  border-radius: 16rpx;
+}
+
+.radius-lg {
+  border-radius: 24rpx;
+}
+
+/* 间距 */
+.mt-sm { margin-top: 16rpx; }
+.mt-md { margin-top: 24rpx; }
+.mt-lg { margin-top: 32rpx; }
+
+.mb-sm { margin-bottom: 16rpx; }
+.mb-md { margin-bottom: 24rpx; }
+.mb-lg { margin-bottom: 32rpx; }
+
+.p-sm { padding: 16rpx; }
+.p-md { padding: 24rpx; }
+.p-lg { padding: 32rpx; }
+
+/* 文字 */
+.text-primary { color: #07c160; }
+.text-success { color: #07c160; }
+.text-warning { color: #faad14; }
+.text-danger { color: #ff4d4f; }
+.text-muted { color: #999; }
+
+.text-sm { font-size: 22rpx; }
+.text-base { font-size: 28rpx; }
+.text-lg { font-size: 32rpx; }
+.text-xl { font-size: 36rpx; }
+
+.text-bold { font-weight: 600; }
+.text-normal { font-weight: 400; }
+
+/* Flex工具 */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-sm { gap: 12rpx; }
+.gap-md { gap: 16rpx; }
+.gap-lg { gap: 24rpx; }

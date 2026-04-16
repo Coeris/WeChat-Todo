@@ -1,0 +1,107 @@
+<view class="container {{darkMode ? 'dark' : ''}}"
+      bindtouchstart="onPageTouchStart"
+      bindtouchend="onPageTouchEnd">
+  <!-- 筛选按钮 -->
+  <view class="filter-bar">
+    <!-- 滑动背景 -->
+    <view class="filter-slider {{sliderReady ? '' : 'slider-hidden'}}" style="left: {{sliderLeft}}px; width: {{sliderWidth}}px;"></view>
+    <view
+      class="filter-btn {{filter === 'done' ? 'active' : ''}}"
+      bindtap="setFilter"
+      data-type="done">
+      <text class="filter-label">✅ 已完成</text>
+    </view>
+    <view
+      class="filter-btn {{filter === 'todo' ? 'active' : ''}}"
+      bindtap="setFilter"
+      data-type="todo">
+      <text class="filter-label">⏰ 待办</text>
+    </view>
+    <view
+      class="filter-btn {{filter === 'quadrant' ? 'active' : ''}}"
+      bindtap="setFilter"
+      data-type="quadrant">
+      <text class="filter-label">🎭 象限</text>
+    </view>
+  </view>
+
+  <!-- 搜索（仅待办视图显示） -->
+  <search-module wx:if="{{showSearch}}" />
+
+  <!-- 象限视图 -->
+  <view class="content quadrant-view {{contentAnimClass}}" wx:if="{{filter === 'quadrant'}}">
+    <view class="quadrant-grid">
+      <view
+        class="quadrant-section {{item.className}}"
+        wx:for="{{quadrantList}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="addToQuadrant">
+        <view class="quadrant-header">
+          <text class="quadrant-icon">{{item.icon}}</text>
+          <text class="quadrant-title">{{item.title}}</text>
+          <text class="quadrant-count">{{quadrantTasks[item.key].length}}</text>
+        </view>
+        <view class="quadrant-tasks">
+          <block wx:if="{{quadrantTasks[item.key].length > 0}}">
+            <view
+              class="task-card priority-{{task.priority}} {{task.completed ? 'completed' : ''}} {{task.fadeOut ? 'fade-out' : ''}}"
+              wx:for="{{quadrantTasks[item.key]}}"
+              wx:for-item="task"
+              wx:key="id">
+              <view
+                class="task-status {{task.completed ? 'completed' : ''}} {{task.animateIcon ? 'animate-icon' : ''}}"
+                catchtap="quickComplete"
+                data-id="{{task.id}}">
+                <text class="icon">✓</text>
+              </view>
+              <view class="task-info">
+                <text class="task-title" bindtap="goToTaskDetail" data-id="{{task.id}}">{{task.title}}</text>
+              </view>
+            </view>
+          </block>
+          <view class="empty-quadrant" wx:else>
+            <text>暂无任务</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 列表视图 -->
+  <scroll-view class="content {{contentAnimClass}}" scroll-y wx:if="{{filter !== 'quadrant'}}" enhanced show-scrollbar="{{false}}">
+    <block wx:for="{{taskGroups}}" wx:key="title" wx:for-item="group">
+      <view class="group-title" catchtap="toggleGroup" data-title="{{group.title}}" wx:if="{{filter !== 'done'}}">
+        <text>{{group.title}}（{{group.tasks.length}}）</text>
+        <text class="group-arrow {{collapsedGroups[group.title] ? 'collapsed' : ''}}">▾</text>
+      </view>
+
+      <task-list
+        wx:if="{{!collapsedGroups[group.title]}}"
+        tasks="{{group.tasks}}"
+        bind:taskClick="onTaskClick"
+        bind:statusChange="onStatusChange"
+        bind:importantChange="onImportantChange"
+        bind:deleteTask="onDeleteTask"
+      />
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{taskGroups.length === 0}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">{{filter === 'done' ? '暂无已完成任务' : '暂无任务'}}</text>
+      <text class="empty-tip" wx:if="{{filter === 'todo'}}">点击下方按钮添加任务</text>
+      <text class="empty-tip" wx:if="{{filter === 'done'}}">完成任务后会显示在这里</text>
+    </view>
+  </scroll-view>
+
+  <!-- 加载状态 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn {{showAddBtn ? 'add-btn-visible' : 'add-btn-hidden'}}" bindtap="goToAddTask">
+    <text>+</text>
+  </view>
+</view>

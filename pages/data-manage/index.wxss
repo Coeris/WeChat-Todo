@@ -1,0 +1,799 @@
+.container {
+  min-height: 100vh;
+  background: #ededed;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 40rpx);
+}
+
+.container.dark {
+  background: #191919;
+}
+
+/* 存储概览卡片 */
+.storage-card {
+  background: #fff;
+  margin: 24rpx;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.dark .storage-card {
+  background: #1e293b;
+}
+
+.storage-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.storage-card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .storage-card-title {
+  color: #fff;
+}
+
+.storage-card-detail {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.dark .storage-card-detail {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.storage-bar {
+  height: 16rpx;
+  background: #f0f0f0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 28rpx;
+}
+
+.dark .storage-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.storage-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #07c160, #06ad56);
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+  min-width: 0;
+}
+
+.storage-stats-row {
+  display: flex;
+  justify-content: space-around;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  padding: 24rpx 0;
+}
+
+.dark .storage-stats-row {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.storage-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.storage-stat-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #333;
+  line-height: 1;
+}
+
+.dark .storage-stat-value {
+  color: #fff;
+}
+
+.storage-stat-value.completed {
+  color: #07c160;
+}
+
+.storage-stat-value.pending {
+  color: #ff9800;
+}
+
+.storage-stat-value.overdue {
+  color: #fa5151;
+}
+
+.storage-stat-label {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.dark .storage-stat-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.storage-stat-divider {
+  width: 1rpx;
+  height: 48rpx;
+  background: #e5e5e5;
+}
+
+.dark .storage-stat-divider {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 通用 section */
+.section {
+  margin: 0 24rpx 24rpx;
+}
+
+.section-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+  position: relative;
+}
+
+.dark .section-title {
+  color: #fff;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6rpx;
+  height: 24rpx;
+  background: #07c160;
+  border-radius: 3rpx;
+}
+
+/* 卡片 */
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.dark .card {
+  background: #1e293b;
+}
+
+.card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 24rpx;
+  cursor: pointer;
+}
+
+.card-row:active {
+  background: #f8f9fa;
+}
+
+.dark .card-row:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  flex-shrink: 0;
+}
+
+.export-icon {
+  background: #e0f2fe;
+}
+
+.import-icon {
+  background: #f0fdf4;
+}
+
+.stats-icon {
+  background: #fef3c7;
+}
+
+.sync-icon {
+  background: #ede9fe;
+}
+
+.clear-icon {
+  background: #fce7f3;
+}
+
+.danger-icon {
+  background: #fee2e2;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  min-width: 0;
+}
+
+.card-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .card-name {
+  color: #fff;
+}
+
+.card-desc {
+  font-size: 24rpx;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dark .card-desc {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.card-arrow {
+  font-size: 28rpx;
+  color: #d9d9d9;
+  font-weight: 300;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.card-right-group {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+}
+
+.card-divider {
+  height: 1rpx;
+  background: #f5f5f5;
+  margin-left: 116rpx;
+}
+
+.dark .card-divider {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 同步状态标签 */
+.status-tag {
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+  color: #999;
+  background: #f0f0f0;
+  font-weight: 500;
+}
+
+.status-tag.configured {
+  color: #07c160;
+  background: rgba(7, 193, 96, 0.1);
+}
+
+.dark .status-tag {
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark .status-tag.configured {
+  color: #07c160;
+  background: rgba(7, 193, 96, 0.15);
+}
+
+/* 危险操作 */
+.danger-text {
+  color: #ff4d4f !important;
+}
+
+.danger-row:active {
+  background: #fff1f0 !important;
+}
+
+/* ==================== 弹窗通用 ==================== */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.modal-mask.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: #fff;
+  border-radius: 24rpx;
+  width: 600rpx;
+  max-height: 85vh;
+  overflow: hidden;
+  z-index: 1001;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.dark .modal-content {
+  background: #1e293b;
+}
+
+.modal-content.show {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.dark .modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .modal-title {
+  color: #fff;
+}
+
+.modal-close {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 32rpx;
+  max-height: 60vh;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.modal-body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.modal-footer {
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.dark .modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-btn {
+  height: 88rpx;
+  background: #07c160;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+/* ==================== 统计弹窗 ==================== */
+.stats-grid-large {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.stat-box-large {
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.dark .stat-box-large {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stat-box-large.primary {
+  background: #07c160;
+}
+
+.stat-box-large.success {
+  background: #07c160;
+}
+
+.stat-box-large.warning {
+  background: #ff9800;
+}
+
+.stat-box-large.danger {
+  background: #fa5151;
+}
+
+.stat-num-large {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #333;
+  line-height: 1;
+}
+
+.stat-box-large.primary .stat-num-large,
+.stat-box-large.success .stat-num-large,
+.stat-box-large.warning .stat-num-large,
+.stat-box-large.danger .stat-num-large {
+  color: #fff;
+}
+
+.stat-label-large {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.stat-box-large.primary .stat-label-large,
+.stat-box-large.success .stat-label-large,
+.stat-box-large.warning .stat-label-large,
+.stat-box-large.danger .stat-label-large {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.stats-detail {
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.dark .stats-detail {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .detail-item {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.dark .detail-label {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.detail-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .detail-value {
+  color: #fff;
+}
+
+.detail-value.empty {
+  color: #ccc;
+}
+
+.dark .detail-value.empty {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.detail-value.overdue {
+  color: #fa5151;
+}
+
+/* ==================== WebDAV 弹窗 ==================== */
+.webdav-modal .modal-body {
+  max-height: 70vh;
+  height: 70vh;
+  box-sizing: border-box;
+}
+
+.webdav-status {
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid #bae6fd;
+}
+
+.dark .webdav-status {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(125, 211, 252, 0.1) 100%);
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.status-item:not(:last-child) {
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .status-item:not(:last-child) {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.status-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.dark .status-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.status-value {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .status-value {
+  color: #fff;
+}
+
+.status-value.configured {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.webdav-form {
+  margin-bottom: 24rpx;
+  flex-shrink: 0;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-item.switch-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.dark .form-item.switch-item {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.switch-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.dark .form-label {
+  color: #fff;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  background: #fff;
+  border: 2rpx solid #e2e8f0;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.dark .form-input {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.form-input:focus {
+  border-color: #07c160;
+  outline: none;
+}
+
+.form-hint {
+  font-size: 22rpx;
+  color: #999;
+  display: block;
+  margin-top: 8rpx;
+  line-height: 1.5;
+}
+
+.dark .form-hint {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 开关 */
+.switch {
+  width: 100rpx;
+  height: 56rpx;
+  background: #d9d9d9;
+  border-radius: 28rpx;
+  position: relative;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.switch.on {
+  background: #07c160;
+}
+
+.switch-knob {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 48rpx;
+  height: 48rpx;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s;
+}
+
+.switch.on .switch-knob {
+  left: 48rpx;
+}
+
+/* WebDAV操作按钮 */
+.webdav-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+  padding-bottom: 24rpx;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  height: 80rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  color: #fff;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.test-btn {
+  background: #ff9800;
+}
+
+.save-btn {
+  background: #07c160;
+}
+
+.sync-btn {
+  grid-column: 1 / -1;
+  background: #07c160;
+}
+
+.clear-btn {
+  background: #fa5151;
+}
+
+/* WebDAV帮助信息 */
+.webdav-help {
+  background: #fef3c7;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  border: 1rpx solid #fcd34d;
+  flex-shrink: 0;
+}
+
+.dark .webdav-help {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.help-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 12rpx;
+}
+
+.dark .help-title {
+  color: #fbbf24;
+}
+
+.help-step {
+  font-size: 24rpx;
+  color: #78350f;
+  line-height: 2;
+  padding-left: 8rpx;
+}
+
+.dark .help-step {
+  color: rgba(251, 191, 36, 0.9);
+}
